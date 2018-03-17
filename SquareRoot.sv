@@ -5,7 +5,7 @@ module SquareRoot
 (	// Input ports
 	input clk,
 	input reset,
-	input [WORD_LENGTH-1 : 0] DataInput,
+	input [(WORD_LENGTH/2)-1 : 0] DataInput,
 	
 	// Output ports
 	output [WORD_LENGTH-1 : 0] result,
@@ -31,14 +31,14 @@ wire [(WORD_LENGTH/2)-1 : 0] finalR_w;
 wire [(WORD_LENGTH/2)-1 : 0] finalRQ_w;
 wire [(WORD_LENGTH/2)-1 : 0] q_w;
 wire [4:0] counter_w1;
-wire [(WORD_LENGTH/2)-1:0] DInput_w = DataInput[(WORD_LENGTH/2)-1:0];
+wire [(WORD_LENGTH/2)-1 : 0] DInput_w = DataInput[(WORD_LENGTH/2)-1:0];
 bit signQ_bit; 
 
 assign signQ_bit = ~R_w[7];
 assign q_w = (q1_w << 1) | signQ_bit;
 assign counter_w2 = counter_w1 << 1;
 assign R_w1 = (R1_w << 2);
-assign R_w2 = R_w1 | ((DInput_w >> counter_w2) & 3);
+assign R_w2 = (R_w1 | ((DInput_w >> counter_w2) & 3));
 
 Multiplexer2to1
 #(
