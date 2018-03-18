@@ -5,7 +5,7 @@ module SquareRoot
 (	// Input ports
 	input clk,
 	input reset,
-	input [(WORD_LENGTH/2)-1 : 0] DataInput,
+	input [WORD_LENGTH-1 : 0] DataInput,
 	
 	// Output ports
 	output [WORD_LENGTH-1 : 0] result,
@@ -15,23 +15,23 @@ module SquareRoot
 bit flag0_bit;
 bit enable_bit;
 bit enableR_bit;
-wire [(WORD_LENGTH/2)-1 : 0] R_w;
-wire [(WORD_LENGTH/2)-1 : 0] result_w;
-wire [(WORD_LENGTH/2)-1 : 0] residue_w;
-wire [(WORD_LENGTH/2)-1 : 0] Rreg_w;
-wire [(WORD_LENGTH/2)-1 : 0] Qreg_w;
-wire [(WORD_LENGTH/2)-1 : 0] final_residue_w;
-wire [(WORD_LENGTH/2)-1 : 0] adder1_w;
-wire [(WORD_LENGTH/2)-1 : 0] q1_w;
-wire [(WORD_LENGTH/2)-1 : 0] R1_w;
+wire [WORD_LENGTH-1 : 0] R_w;
+wire [WORD_LENGTH-1 : 0] result_w;
+wire [WORD_LENGTH-1 : 0] residue_w;
+wire [WORD_LENGTH-1 : 0] Rreg_w;
+wire [WORD_LENGTH-1 : 0] Qreg_w;
+wire [WORD_LENGTH-1 : 0] final_residue_w;
+wire [WORD_LENGTH-1 : 0] adder1_w;
+wire [WORD_LENGTH-1 : 0] q1_w;
+wire [WORD_LENGTH-1 : 0] R1_w;
 wire [4:0] counter_w2;
-wire [(WORD_LENGTH/2)-1 : 0] R_w1;
-wire [(WORD_LENGTH/2)-1 : 0] R_w2;
-wire [(WORD_LENGTH/2)-1 : 0] finalR_w;
-wire [(WORD_LENGTH/2)-1 : 0] finalRQ_w;
-wire [(WORD_LENGTH/2)-1 : 0] q_w;
+wire [WORD_LENGTH-1 : 0] R_w1;
+wire [WORD_LENGTH-1 : 0] R_w2;
+wire [WORD_LENGTH-1 : 0] finalR_w;
+wire [WORD_LENGTH-1 : 0] finalRQ_w;
+wire [WORD_LENGTH-1 : 0] q_w;
 wire [4:0] counter_w1;
-wire [(WORD_LENGTH/2)-1 : 0] DInput_w = DataInput[(WORD_LENGTH/2)-1:0];
+wire [WORD_LENGTH-1 : 0] DInput_w = DataInput[WORD_LENGTH-1:0];
 bit signQ_bit; 
 
 assign signQ_bit = ~R_w[7];
@@ -42,35 +42,35 @@ assign R_w2 = (R_w1 | ((DInput_w >> counter_w2) & 3));
 
 Multiplexer2to1
 #(
-	.NBits(WORD_LENGTH/2)
+	.NBits(WORD_LENGTH)
 )
 mux_Rinitial
 (
 	.Selector(flag0_bit),
 	.MUX_Data0(Rreg_w),
-	.MUX_Data1({(WORD_LENGTH/2){1'b0}}),
+	.MUX_Data1({WORD_LENGTH{1'b0}}),
 	.MUX_Output(R1_w)
 );
 
 Multiplexer2to1
 #(
-	.NBits(WORD_LENGTH/2)
+	.NBits(WORD_LENGTH)
 )
 mux_Qinitial
 (
 	.Selector(flag0_bit),
 	.MUX_Data0(Qreg_w),
-	.MUX_Data1({(WORD_LENGTH/2){1'b0}}),
+	.MUX_Data1({WORD_LENGTH{1'b0}}),
 	.MUX_Output(q1_w)
 );
 
 Multiplexer2to1
 #(
-	.NBits((WORD_LENGTH/2))
+	.NBits(WORD_LENGTH)
 )
 mux_q
 (
-	.Selector(R1_w[(WORD_LENGTH/2)-1]),
+	.Selector(R1_w[WORD_LENGTH-1]),
 	.MUX_Data0((q1_w << 2) | 1),
 	.MUX_Data1((q1_w << 2) | 3),
 	.MUX_Output(adder1_w)
@@ -79,7 +79,7 @@ mux_q
 
 Multiplexer2to1
 #(
-	.NBits((WORD_LENGTH/2))
+	.NBits(WORD_LENGTH)
 )
 final_R
 (
@@ -91,7 +91,7 @@ final_R
 
 Multiplexer2to1
 #(
-	.NBits((WORD_LENGTH/2))
+	.NBits(WORD_LENGTH)
 )
 final_RQ
 (
@@ -103,11 +103,11 @@ final_RQ
 
 Adder
 #(
-	.WORD_LENGTH((WORD_LENGTH/2))
+	.WORD_LENGTH(WORD_LENGTH)
 )
 adder_sqroot
 (
-	.selector(R1_w[(WORD_LENGTH/2)-1]),
+	.selector(R1_w[WORD_LENGTH-1]),
 	.Data1(finalR_w),
 	.Data2(finalRQ_w),
 	.result(R_w)
@@ -126,7 +126,7 @@ CounterWithFunction counter_sqroot
 
 Register
 #(
-	.Word_Length((WORD_LENGTH/2))
+	.Word_Length(WORD_LENGTH)
 )
 R_reg
 (
@@ -142,7 +142,7 @@ R_reg
 
 Register
 #(
-	.Word_Length((WORD_LENGTH/2))
+	.Word_Length(WORD_LENGTH)
 )
 Q_reg
 (
@@ -159,7 +159,7 @@ Q_reg
 
 Register
 #(
-	.Word_Length((WORD_LENGTH/2))
+	.Word_Length(WORD_LENGTH)
 )
 result_reg
 (
@@ -175,11 +175,11 @@ result_reg
 
 Multiplexer2to1
 #(
-	.NBits((WORD_LENGTH/2))
+	.NBits(WORD_LENGTH)
 )
 final_residue
 (
-	.Selector(Rreg_w[(WORD_LENGTH/2)-1]),
+	.Selector(Rreg_w[WORD_LENGTH-1]),
 	.MUX_Data0(Rreg_w),
 	.MUX_Data1(R_w),
 	.MUX_Output(final_residue_w)
@@ -187,7 +187,7 @@ final_residue
 
 Register
 #(
-	.Word_Length((WORD_LENGTH/2))
+	.Word_Length(WORD_LENGTH)
 )
 residue_reg
 (
